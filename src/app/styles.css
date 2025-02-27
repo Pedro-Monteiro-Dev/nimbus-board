@@ -1,0 +1,325 @@
+#weatherinfo{
+    padding: 0px 90px;
+    margin-top: 50px;
+}
+
+#weatherbox{
+    width: 515px;
+    height: 700px;
+    background-color: var(--bg-color-panel);
+    border-radius: 150px;
+    box-shadow: 20px 20px 4px rgba(0,0,0,0.25);
+    padding: 90px 40px;
+}
+
+#weatherbox h1{
+    font-size: 80px;
+    color: var(--text-color);;
+    font-weight: bold;
+}
+
+#weatherbox p{
+    font-size: 48px;
+    color: var(--text-color);
+}
+
+#weatherbox_info_extra {
+    padding: 45px 60px;
+    width: 50%;
+}
+
+#weatherbox_info_extra h1{
+    font-size: 64px;
+    text-shadow: 5px 5px 4px rgba(0, 0, 0, 0.25);
+    color: var(--text-color);;
+    font-weight: bold;
+    padding-bottom: 15px;
+}
+
+#weatherbox_info_extra svg{
+    -webkit-filter: drop-shadow(5px 5px 4px rgba(0, 0, 0, 0.25));
+}
+
+#weatherbox_info_extra p{
+    font-size: 48px;
+    text-shadow: 5px 5px 4px rgba(0, 0, 0, 0.25);
+    color: var(--text-color);;
+    padding-bottom: 15px;
+}
+
+#weather_icon{
+    width: 200px;
+    height: 200px;
+    margin-right: 40px;
+}
+
+#weatherbox_main_attributes{
+    margin-bottom: 40px;
+}
+
+#navbar{
+    background-color: var(--navbar-color);
+}
+
+#navbar_logo{
+    font-size: 30px;
+    font-weight: bold;
+    width: fit-content;
+    padding:25px
+}
+
+#searchbar{
+    float: right;
+    padding: 20px;
+}
+
+#searchbar_input{
+    width:450px;
+    padding:10px;
+    border-radius: 50px;
+    outline: none;
+}
+
+
+/* Responsive Design for max-width: 1200px */
+@media (max-width: 1200px) {
+    #weatherinfo {
+        padding: 0px 50px;
+    }
+
+    #weatherbox {
+        width: 400px;
+        height: auto;
+        padding: 70px 30px;
+        border-radius: 100px;
+    }
+
+    #weatherbox h1 {
+        font-size: 60px;
+    }
+
+    #weatherbox p {
+        font-size: 36px;
+    }
+
+    #weatherbox_info_extra {
+        padding: 30px 40px;
+        width: 40%;
+    }
+
+    #weatherbox_info_extra h1 {
+        font-size: 48px;
+    }
+
+    #weatherbox_info_extra p {
+        font-size: 36px;
+    }
+
+    #weather_icon {
+        width: 150px;
+        height: 150px;
+        margin-right: 20px;
+    }
+}
+
+/* Responsive Design for Tablets (Max width: 768px) */
+@media (max-width: 768px) {
+    #weatherinfo {
+        padding: 0px 40px;
+    }
+
+    #weatherbox {
+        width: 400px;
+        height: auto;
+        padding: 60px 30px;
+        border-radius: 100px;
+    }
+
+    #weatherbox h1 {
+        font-size: 60px;
+    }
+
+    #weatherbox p {
+        font-size: 36px;
+    }
+
+    #weatherbox_info_extra {
+        padding: 30px 40px;
+        width: 100%;
+    }
+
+    #weatherbox_info_extra h1 {
+        font-size: 48px;
+    }
+
+    #weatherbox_info_extra p {
+        font-size: 36px;
+    }
+
+    #weather_icon {
+        width: 150px;
+        height: 150px;
+    }
+    
+}
+
+/* Responsive Design for Small Devices (Max width: 576px) */
+@media (max-width: 576px) {
+    #weatherinfo {
+        padding: 0px 20px;
+    }
+
+    #weatherbox {
+        width: 100%;
+        height: auto;
+        padding: 40px 20px;
+        border-radius: 50px;
+    }
+
+    #weatherbox h1 {
+        font-size: 40px;
+    }
+
+    #weatherbox p {
+        font-size: 24px;
+    }
+
+    #weatherbox_info_extra {
+        padding: 20px;
+    }
+
+    #weatherbox_info_extra h1 {
+        font-size: 32px;
+    }
+
+    #weatherbox_info_extra p {
+        font-size: 24px;
+    }
+
+    #weather_icon {
+        width: 100px;
+        height: 100px;
+    }
+}
+
+/* Responsive Design for Extra Small Devices (Max width: 360px) */
+@media (max-width: 360px) {
+    #weatherbox {
+        padding: 20px;
+        border-radius: 40px;
+    }
+
+    #weatherbox h1 {
+        font-size: 30px;
+    }
+
+    #weatherbox p {
+        font-size: 20px;
+    }
+
+    #weatherbox_info_extra h1 {
+        font-size: 24px;
+    }
+
+    #weatherbox_info_extra p {
+        font-size: 18px;
+    }
+
+    #weather_icon {
+        width: 80px;
+        height: 80px;
+    }
+}
+
+
+/* Responsive design for tablets (max-width: 768px) */
+@media (max-width: 768px) {
+    #searchbar_input {
+        width: 320px;
+    }
+    #search_results{
+        width: 320px!important;
+    }
+    #navbar_logo {
+        font-size: 25px; 
+    }
+}
+
+/* Responsive design for small devices (max-width: 576px) */
+@media (max-width: 576px) {
+    #searchbar {
+        padding: 10px;
+    }
+
+    #searchbar_input {
+        width: 190px;
+        padding:15px;
+    }
+    #search_results{
+        width: 190px!important;
+    }
+
+    #navbar_logo {
+        font-size: 100%;
+        padding:25px;
+    }
+}
+
+/* For extra-small devices (max-width: 360px) */
+@media (max-width: 360px) {
+    #searchbar {
+        float: none;
+        text-align: center;
+        padding: 10px;
+        width: 100%;
+    }
+
+    #searchbar_input {
+        width: 100%!important;
+        padding:10px;
+    }
+    #search_results{
+        width: 95%!important;
+    }
+    #navbar_logo {
+        font-size: 100%;
+        padding:10px;
+    }
+}
+
+
+#search_results{
+    overflow: hidden;
+    margin-top: 5px;
+    position: absolute;
+    background-color: white;
+    width: 450px;
+    border-radius: 10px;
+    z-index: 999;
+}
+
+#search_results li{
+    
+    padding: 10px;
+}
+
+#search_results li:hover{
+    background-color: rgb(228, 228, 228);
+    cursor: pointer;
+}
+
+#weatherSecondaryIcon{
+    position: fixed;
+    bottom: -100px;
+    width: 500px;
+    height: 500px;
+    right: 0;
+}
+
+#weatherSecondaryIcon img{
+    
+}
+
+#weatherSecondaryIconParent{
+    
+}
