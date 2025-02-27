@@ -316,11 +316,11 @@ export default function Home() {
     
                     var getWeatherData
                     if (worldlocation.latitude != null && worldlocation.longitude != null){
-                        getWeatherData = await fetch(`http://api.weatherapi.com/v1/current.json?key=5629d9586cd0401fb1e142501241508&q=${worldlocation.latitude},${worldlocation.longitude}`);
+                        getWeatherData = await fetch(`https://api.weatherapi.com/v1/current.json?key=5629d9586cd0401fb1e142501241508&q=${worldlocation.latitude},${worldlocation.longitude}`);
                     }
                     else
                     {
-                        getWeatherData = await fetch('http://api.weatherapi.com/v1/current.json?key=5629d9586cd0401fb1e142501241508&q=Lisbon');
+                        getWeatherData = await fetch('https://api.weatherapi.com/v1/current.json?key=5629d9586cd0401fb1e142501241508&q=Lisbon');
                     }
                     
                     const weatherData = await getWeatherData.json();
