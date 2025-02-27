@@ -9,7 +9,7 @@ export default function SearchLocation() {
 
 
     const filteredItems = items.filter((item) =>
-    item.toLowerCase().includes(query.toLowerCase())
+        item.toLowerCase().includes(query.toLowerCase())
     );
 
     const [query, setQuery] = useState("");
@@ -20,16 +20,17 @@ export default function SearchLocation() {
 
     return (
         <div>
-            <input type="text" placeholder="Search.." name="location_search"></input>
-            <button
-                onClick={handleSearch}
+            <input
+                type="text"
+                placeholder="Search.."
+                name="location_search"
+                value={query}
+                onChange={handleSearch}
                 style={{
-                padding: "10px 20px",
-                marginLeft: "10px",
+                padding: "10px",
                 fontSize: "16px",
-                cursor: "pointer",
                 }}
-            >
+            />
         </div>
     
 

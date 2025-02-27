@@ -1,146 +1,183 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { NextRequest, NextFetchEvent, NextResponse } from "next/server";
-import "./styles.css";
-import "./globals.css";
-import { color, motion, useAnimationControls } from 'framer-motion';
+//import { NextRequest, NextFetchEvent, NextResponse } from "next/server";
+import { motion,} from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCableCar, faCloudRain, faMapMarkedAlt, faMapMarker, faMapMarkerAlt, faThumbsUp, faUmbrella } from '@fortawesome/free-solid-svg-icons'
-import { faUmbrellaBeach } from '@fortawesome/free-solid-svg-icons/faUmbrellaBeach';
+import { faMapMarkerAlt} from '@fortawesome/free-solid-svg-icons'
+import { useCallback } from 'react';
+
 
 //import photo from '../assets/images/photo.jpg';
 
-export async function middleware(request: NextRequest, _next: NextFetchEvent) {
-    const res = NextResponse.next();
-    const country = request.geo?.country ?? ""
-    return res;
-  }
+import "./styles.css";
+import "./globals.css";
 
-export default function About() {
+export default function Home() {
 
-    const [weather, setWeather] = useState(null);
+    interface LocationTimeInfo {
+        dayOfWeek: string;
+        day: string;
+        month: string;
+        year: string;
+    }
+
+    interface Location {
+        region: string;
+        country: string;
+    }
+
+    interface WeatherCondition {
+        text: string;
+    }
+      
+    interface Weather {
+        current: {
+            temp_c: number;
+            condition: WeatherCondition;
+            wind_kph: number;
+            humidity: number;
+        };
+        location: Location;
+    }
+
+    const [loading, setLoading] = useState(true);
+
+    const [weather, setWeather] = useState<Weather | null>(null);
 
     const [weatherAnimationKey, setWeatherAnimationKey] = useState(0);
     const [weatherAnimationExtraKey, setWeatherAnimationExtraKey] = useState(50);
 
-    const [worldlocation, setLocation] = useState({ latitude: null, longitude: null });
+    const [worldlocation, setLocation] =  useState<{ latitude: number; longitude: number } | null>(null);
     
-    const [locationError,setLocationError] = useState(null);
+    const [locationError,setLocationError] = useState<string | null>(null);
 
     const [searchLocations,setSearchLocations] = useState([]);
     const [tempCityName,setTempCityName] = useState();
     const [cityName,setCityName] = useState();
-    const [displayWeatherName,setDisplayWeatherName] = useState(null);
+    const [displayWeatherName,setDisplayWeatherName] = useState<string | null>(null);
 
     const [searchBarFocused,setSearchBarFocused] = useState(false);
     const [query, setQuery] = useState("");
 
-    const [locationTimeInfo,setLocationTimeInfo] = useState(null);
-    const [locationMonth,setLocationMonth] = useState(null);
+    const [locationTimeInfo,setLocationTimeInfo] = useState<LocationTimeInfo | null>(null);
+    const [locationMonth,setLocationMonth] = useState<string | null>(null);
     
-    const [weatherIcon,setWeatherIcon] = useState(null);
+    const [weatherIcon,setWeatherIcon] = useState<string | null>(null);
 
-    const isDayTime = (getAestheticTime) => {
+    /*
+    const isDayTime = (getAestheticTime: number) => {
         return getAestheticTime < 19;
-    };
+    };*/
 
-    const setAestheticTheme = (icon ,color_header, color_gradient_a, color_gradient_b, color_panel, color_text) => {
+    const isDayTime = useCallback((time: number) => {
+        return time < 19;
+      }, []);
+
+    const setAestheticTheme = useCallback((
+        icon: string, 
+        color_header: string, 
+        color_gradient_a: string, 
+        color_gradient_b: string, 
+        color_panel: string, 
+        color_text: string
+      ) => {
         setWeatherIcon(icon);
         document.documentElement.style.setProperty('--navbar-color', color_header);
         document.documentElement.style.setProperty('--bg-color-gradient-a', color_gradient_a);
         document.documentElement.style.setProperty('--bg-color-gradient-b', color_gradient_b);
         document.documentElement.style.setProperty('--bg-color-panel', color_panel);
         document.documentElement.style.setProperty('--text-color', color_text);
-    };
+    },[]);
 
-    const handleWeatherAesthetic = (aesthetic,aestheticTime) =>{
-        //alert(aesthetic);
-        //controls.start();
-        setWeatherAnimationKey(prevKey => prevKey + 1);
-        setWeatherAnimationExtraKey(prevKey => prevKey + 1);
-        
-        switch(aesthetic){
-            case 1000://Sunny/Clear
-            case 1003://Partly cloudy
-                setAestheticTheme("/images/sun.png","rgba(91, 165, 234, 0.5)","#C2D9ED","#6CB9FF","#C9DEFF","#000000");
-
-                if (isDayTime(aestheticTime)) {
-                    setDisplayWeatherName("Sunny");
-                } else {
-                    setDisplayWeatherName("Clear");
-                }
-                
-                break;
-            case 1006://Cloudy
-            case 1009://Overcast
-                setAestheticTheme("/images/cloud.png","rgba(91, 165, 234, 0.5)","#6588A8","#25639C","#5171A1","#ffffff");
-                setDisplayWeatherName("Cloudy");
-                break;
-            case 1030://Mist
-            case 1135://Fog
-            case 1147://Freezing fog
-                setAestheticTheme("/images/fog.png","rgba(155, 181, 205, 0.5)","#A9B6C1","#B2CCE4","#D1D8E1","#000000");
-                setDisplayWeatherName("Fog");
-                break;
-            case 1063://possible patchy rain
-            case 1150://Patchy light drizzle
-            case 1153://Light drizzle
-            case 1168://Freezing drizzle
-            case 1171://Heavy freezing drizzle
-            case 1180://Patchy light rain
-            case 1183://Light rain
-            case 1186://Moderate rain at times
-            case 1189://Moderate rain
-            case 1192://Heavy rain at times
-            case 1195://Heavy rain
-            case 1198://Light freezing rain
-            case 1201://Moderate or heavy freezing rain
-            case 1240://Light rain shower
-            case 1243://Moderate or heavy rain shower
-            case 1246://Torrential rain shower
-                setAestheticTheme("/images/rainy.png","rgba(35, 111, 181, 0.5)","#656ba5","#6cb9ff","#1B427B","#ffffff");
-                setDisplayWeatherName("Raining");
-                break;
-            case 1066://Patchy snow possible
-            case 1069://Patchy sleet possible
-            case 1072://Patchy freezing drizzle possible
-            case 1204://Light sleet
-            case 1207://Moderate or heavy sleet
-            case 1210://Patchy light snow
-            case 1213://Light snow
-            case 1216://Patchy moderate snow
-            case 1219://Moderate snow
-            case 1222://Patchy heavy 
-            case 1225://Heavy snow
-            case 1237://Ice pellets
-            case 1249://Light sleet showers
-            case 1252://Moderate or heavy sleet showers
-            case 1255://Light snow showers
-            case 1258://Moderate or heavy snow showers
-            case 1261://Light showers of ice pellets
-            case 1264://Moderate or heavy showers of ice pellets
-            case 1114://Blowing snow
-            case 1117://Blizzard
-                setAestheticTheme("/images/snowflake.png","rgba(232, 249, 255, 0.5)","#D6E3EF","#BDEBFF","#ffffff","#000000");
-                setDisplayWeatherName("Snow");
-                break;
-            case 1087://Thundery outbreaks possible
-            case 1273://Patchy light rain with thunder
-            case 1276://Moderate or heavy rain with thunder
-            case 1279://Patchy light snow with thunder
-            case 1282://Moderate or heavy snow with thunder
-                setAestheticTheme("/images/thunderstorm.png","rgba(47, 134, 214, 0.5)","#183D76","#27649C","#426AA6","#ffffff");
-                setDisplayWeatherName("Thunder");
-                break;
-            default:
-                setAestheticTheme("","hsla(209, 68%, 42%, 0.5)","#6CB9FF","#C2D9ED","#C9DEFF","#000000");
-                //setDisplayWeatherName(null)
-                break;
+    const handleWeatherAesthetic = useCallback((aesthetic: any, aestheticTime: number) => {
+            setWeatherAnimationKey((prevKey) => prevKey + 1);
+            setWeatherAnimationExtraKey((prevKey) => prevKey + 1);
             
-        }
-        
-    }
+            switch(aesthetic){
+                case 1000://Sunny/Clear
+                case 1003://Partly cloudy
+                    setAestheticTheme("/images/sun.png","rgba(91, 165, 234, 0.5)","#C2D9ED","#6CB9FF","#C9DEFF","#000000");
+
+                    setDisplayWeatherName(isDayTime(aestheticTime) ? "Sunny" : "Clear");
+                    
+                    break;
+                case 1006://Cloudy
+                case 1009://Overcast
+                    setAestheticTheme("/images/cloud.png","rgba(91, 165, 234, 0.5)","#6588A8","#25639C","#5171A1","#ffffff");
+                    setDisplayWeatherName("Cloudy");
+                    break;
+                case 1030://Mist
+                case 1135://Fog
+                case 1147://Freezing fog
+                    setAestheticTheme("/images/fog.png","rgba(155, 181, 205, 0.5)","#A9B6C1","#B2CCE4","#D1D8E1","#000000");
+                    setDisplayWeatherName("Fog");
+                    break;
+                case 1063://possible patchy rain
+                case 1150://Patchy light drizzle
+                case 1153://Light drizzle
+                case 1168://Freezing drizzle
+                case 1171://Heavy freezing drizzle
+                case 1180://Patchy light rain
+                case 1183://Light rain
+                case 1186://Moderate rain at times
+                case 1189://Moderate rain
+                case 1192://Heavy rain at times
+                case 1195://Heavy rain
+                case 1198://Light freezing rain
+                case 1201://Moderate or heavy freezing rain
+                case 1240://Light rain shower
+                case 1243://Moderate or heavy rain shower
+                case 1246://Torrential rain shower
+                    setAestheticTheme("/images/rainy.png","rgba(35, 111, 181, 0.5)","#656ba5","#6cb9ff","#1B427B","#ffffff");
+                    setDisplayWeatherName("Raining");
+                    break;
+                case 1066://Patchy snow possible
+                case 1069://Patchy sleet possible
+                case 1072://Patchy freezing drizzle possible
+                case 1204://Light sleet
+                case 1207://Moderate or heavy sleet
+                case 1210://Patchy light snow
+                case 1213://Light snow
+                case 1216://Patchy moderate snow
+                case 1219://Moderate snow
+                case 1222://Patchy heavy 
+                case 1225://Heavy snow
+                case 1237://Ice pellets
+                case 1249://Light sleet showers
+                case 1252://Moderate or heavy sleet showers
+                case 1255://Light snow showers
+                case 1258://Moderate or heavy snow showers
+                case 1261://Light showers of ice pellets
+                case 1264://Moderate or heavy showers of ice pellets
+                case 1114://Blowing snow
+                case 1117://Blizzard
+                    setAestheticTheme("/images/snowflake.png","rgba(232, 249, 255, 0.5)","#D6E3EF","#BDEBFF","#ffffff","#000000");
+                    setDisplayWeatherName("Snow");
+                    break;
+                case 1087://Thundery outbreaks possible
+                case 1273://Patchy light rain with thunder
+                case 1276://Moderate or heavy rain with thunder
+                case 1279://Patchy light snow with thunder
+                case 1282://Moderate or heavy snow with thunder
+                    setAestheticTheme("/images/thunderstorm.png","rgba(47, 134, 214, 0.5)","#183D76","#27649C","#426AA6","#ffffff");
+                    setDisplayWeatherName("Thunder");
+                    break;
+                default:
+                    setAestheticTheme("","hsla(209, 68%, 42%, 0.5)","#6CB9FF","#C2D9ED","#C9DEFF","#000000");
+                    //setDisplayWeatherName(null)
+                    break;
+                
+            }
+        },
+        [
+            setAestheticTheme,
+            isDayTime,
+            setDisplayWeatherName,
+            setWeatherAnimationKey,
+            setWeatherAnimationExtraKey,
+        ] 
+    );
 
     const handleSearchFocus = () =>{
         setSearchBarFocused(true);
@@ -153,7 +190,7 @@ export default function About() {
         
     }
 
-    const handleCountryName = (country) =>{
+    const handleCountryName = (country: any) =>{
         switch(country){
             case "United States of America":
                 break;
@@ -163,7 +200,7 @@ export default function About() {
         }
     }
 
-    const handleLocationTimeInfo = (month) =>{
+    const handleLocationTimeInfo = (month: number) =>{
         switch(month){
             case 1:
                 setLocationMonth("Jan");
@@ -205,11 +242,11 @@ export default function About() {
         
     }
 
-    const handleInputChange = (event) => {
+    const handleInputChange = (event:any) => {
         setQuery(event.target.value);
     };
 
-    const changeLocation = (coords,cityLocation) => {
+    const changeLocation = (coords: { lat: any; lon: any; },cityLocation: React.SetStateAction<undefined>) => {
         const latitude = coords.lat;
         const longitude = coords.lon;
         setTempCityName(cityLocation);
@@ -265,6 +302,8 @@ export default function About() {
         const getWeatherAndTime = async() => {
             if (worldlocation && worldlocation.latitude && worldlocation.longitude) {
                 try {
+                    //alert("started process")
+                    setLoading(true);
                     
 
                     const getLocationData = await fetch(`https://timeapi.io/api/time/current/coordinate?latitude=${worldlocation.latitude}&longitude=${worldlocation.longitude}`);
@@ -287,12 +326,14 @@ export default function About() {
                     const weatherData = await getWeatherData.json();
                     setWeather(weatherData);
 
+                    //alert("aaa")
                     handleWeatherAesthetic(weatherData.current.condition.code,locationData.hour);
                     setCityName(tempCityName);
                     
-    
+                    setLoading(false);
                 } catch (error) {
                     console.error("Error retrieving information: ",error);
+                    setLoading(false);
                 }
             }
             
@@ -300,7 +341,7 @@ export default function About() {
         };
 
         getWeatherAndTime();
-    }, [worldlocation]);    
+    }, [worldlocation,handleWeatherAesthetic, tempCityName]);    
 
     return (
         <div>
@@ -322,7 +363,7 @@ export default function About() {
                         <ul id="search_results">
                             {searchBarFocused && (
                                 searchLocations.length > 0 ? (
-                                    searchLocations.map((item, index) => (
+                                    searchLocations.map((item:any, index) => (
                                         <li key={index} onClick={() => changeLocation(item.coordinates,item.name)}>
                                             {item.name}, {item.cou_name_en}
                                         </li>
@@ -340,7 +381,10 @@ export default function About() {
                 </div>
             </nav>
 
-            {weather && locationTimeInfo ? (
+            {loading ? (
+                <p>Loading...</p>
+                 ) : (
+                    weather && locationTimeInfo ? (
 
                 <section id="weatherinfo" className="flex flex-wrap align-middle">
                     <motion.div
@@ -362,7 +406,7 @@ export default function About() {
                         >
                         
                         <div id="weatherbox_main_attributes" className="flex flex-wrap">
-                            <img id="weather_icon" src={weatherIcon} alt="weather_icon"></img>
+                            <img id="weather_icon" src={weatherIcon || "missing_image.png"} alt="weather_icon"></img>
 
                             <div>
                                 {/*<h1>{weather.current.temp_c}ºC</h1> CHECK THIS*/}
@@ -411,8 +455,8 @@ export default function About() {
                 </section>
                 
             ) : ( 
-                <p>Loading...</p>
-            )}
+                <p>???</p>
+            ))}
             
             
             
